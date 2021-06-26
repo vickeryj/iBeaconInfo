@@ -11,9 +11,16 @@ import CoreBluetooth
 
 class ViewController: UITableViewController, CBCentralManagerDelegate, CBPeripheralDelegate {
     
+    struct Device {
+        var identifier: String
+        var name: String
+        var rssi: Int
+        var readings: [Int]
+    }
+    
     var btManager: CBCentralManager?;
-    var deviceList = [String: [String: String]]()
-    var sortedList = [[String: String]]()
+    var deviceList = [String: Device]()
+    var sortedList = [Device]()
     var timeSinceLastRefresh = Date()
     
     override func viewDidAppear(_ animated: Bool) {
@@ -33,21 +40,24 @@ class ViewController: UITableViewController, CBCentralManagerDelegate, CBPeriphe
     }
 
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-        let numberOfReadings = Int(deviceList[peripheral.identifier.uuidString]?["numberOfReadings"] ?? "") ?? 0
-        var movingRSSIAverage : Int = 0
-        if let rssi = Int(deviceList[peripheral.identifier.uuidString]?["rssi"] ?? "") {
-            movingRSSIAverage = ((rssi * numberOfReadings) + RSSI.intValue) / (numberOfReadings + 1)
-        } else {
-            movingRSSIAverage = Int(truncating: RSSI )
+        let previousReadings = deviceList[peripheral.identifier.uuidString]?.readings ?? [Int]()
+        var simpleMovingRSSIAverage = -100
+        var newReadings = previousReadings
+        let sampleSize = 10
+        if previousReadings.count >= sampleSize {
+            newReadings.removeSubrange(0..<previousReadings.count - sampleSize)
         }
-        deviceList[peripheral.identifier.uuidString] = ["identifier": peripheral.identifier.uuidString,
-                                                        "name": peripheral.name ?? "",
-                                                        "rssi": String(describing: movingRSSIAverage),
-                                                        "numberOfReadings": String(describing: numberOfReadings + 1)]
-        if (numberOfReadings == 0) || ((Date().timeIntervalSince1970 - timeSinceLastRefresh.timeIntervalSince1970) > 5) {
+        newReadings.append(RSSI.intValue)
+        simpleMovingRSSIAverage = newReadings.reduce(0, +) / newReadings.count
+        let monitoredDevice = Device(identifier: peripheral.identifier.uuidString,
+                                     name: peripheral.name ?? "",
+                                     rssi: simpleMovingRSSIAverage,
+                                     readings: newReadings)
+        deviceList[peripheral.identifier.uuidString] = monitoredDevice
+        if (newReadings.count == 1) || ((Date().timeIntervalSince1970 - timeSinceLastRefresh.timeIntervalSince1970) > 5) {
             sortedList.removeAll()
             let sortedValues = deviceList.values.sorted(by: {
-                Int($0["rssi"] ?? "") ?? 0 > Int($1["rssi"] ?? "") ?? 0
+                $0.rssi > $1.rssi
             })
             sortedList.append(contentsOf: sortedValues)
             timeSinceLastRefresh = Date()
@@ -64,8 +74,8 @@ class ViewController: UITableViewController, CBCentralManagerDelegate, CBPeriphe
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "defaultCell", for: indexPath)
         let device = sortedList[indexPath.row]
-        cell.textLabel?.text = (device["rssi"] ?? "") + " -- " + (device["name"] ?? "")
-        cell.detailTextLabel?.text = device["identifier"]
+        cell.textLabel?.text = String(device.rssi) + " -- " + device.name
+        cell.detailTextLabel?.text = device.identifier
         return cell
     }
 

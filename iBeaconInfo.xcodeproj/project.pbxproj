@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		351D6B0E2686B69D00189F86 /* BLEDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351D6B0D2686B69D00189F86 /* BLEDetailViewController.swift */; };
 		35D83886268521090083440E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35D83885268521090083440E /* AppDelegate.swift */; };
 		35D83888268521090083440E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35D83887268521090083440E /* SceneDelegate.swift */; };
 		35D8388A268521090083440E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35D83889268521090083440E /* ViewController.swift */; };
@@ -35,6 +36,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		351D6B0D2686B69D00189F86 /* BLEDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEDetailViewController.swift; sourceTree = "<group>"; };
 		35D83882268521090083440E /* iBeaconInfo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iBeaconInfo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		35D83885268521090083440E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		35D83887268521090083440E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -106,6 +108,7 @@
 				35D8388E2685210A0083440E /* Assets.xcassets */,
 				35D838902685210A0083440E /* LaunchScreen.storyboard */,
 				35D838932685210A0083440E /* Info.plist */,
+				351D6B0D2686B69D00189F86 /* BLEDetailViewController.swift */,
 			);
 			path = iBeaconInfo;
 			sourceTree = "<group>";
@@ -259,6 +262,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				35D8388A268521090083440E /* ViewController.swift in Sources */,
+				351D6B0E2686B69D00189F86 /* BLEDetailViewController.swift in Sources */,
 				35D83886268521090083440E /* AppDelegate.swift in Sources */,
 				35D83888268521090083440E /* SceneDelegate.swift in Sources */,
 			);
